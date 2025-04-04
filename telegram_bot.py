@@ -125,3 +125,20 @@ if __name__ == '__main__':
 
     print('Polling...')
     app.run_polling(poll_interval=3)
+
+from flask import Flask, request, jsonify
+app = Flask(__name__)
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.json
+    message = data.get("message", "")
+    risk_level, confidence = classify_message(message)
+    return jsonify({
+        "risk_level": risk_level,
+        "confidence": float(max(confidence)),
+        "message": message
+    })
+
+if __name__ == "__main__":
+    app.run()
